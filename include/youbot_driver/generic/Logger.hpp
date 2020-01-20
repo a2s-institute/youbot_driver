@@ -57,7 +57,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 #ifdef USE_ROS_LOGGING
-	#include <ros/ros.h>
+	#include "rclcpp/rclcpp.hpp"
 #endif
 
 namespace youbot {
