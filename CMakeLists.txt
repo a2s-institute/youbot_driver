@@ -1,7 +1,17 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(youbot_driver)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rosconsole)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+#find_package(std_msgs REQUIRED)
+#find_package(geometry_msgs REQUIRED)
+#find_package(orocos_kdl REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread date_time filesystem system regex)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -32,20 +42,6 @@ else()
 	)
 endif()
 
-## Note exported include dirs for install in cmake/config.cmake
-catkin_package(
-	INCLUDE_DIRS ${INCLUDE_DIRS}
-	LIBRARIES YouBotDriver soem rt
-	CATKIN_DEPENDS roscpp rosconsole
-	DEPENDS Boost
-	CFG_EXTRAS config.cmake
-)
-
-include_directories(
-	${INCLUDE_DIRS}
-	${catkin_INCLUDE_DIRS}
-)
-
 add_definitions(-DUSE_ROS_LOGGING)
 
 ########### CppUnit and tests ###########
@@ -57,6 +53,11 @@ else()
 #	MESSAGE(STATUS "WARNING: CPP_UNIT not found")
 endif()
 
+include_directories(
+  ${INCLUDE_DIRS}
+  PRIVATE ${PYTHON_INCLUDE_DIRS}
+
+)
 
 ########### Doxygen ###########
 #SET(DOXYFILE_LATEX "NO")
@@ -95,27 +96,32 @@ set(YOUBOT_DRIVER_SRC
   src/base-kinematic/FourSwedishWheelOmniBaseKinematicConfiguration.cpp
 )
 
+
+
 add_library(YouBotDriver ${YOUBOT_DRIVER_SRC})
-target_link_libraries(YouBotDriver soem ${catkin_LIBRARIES})
+#target_link_libraries(YouBotDriver soem ${catkin_LIBRARIES})
+target_link_libraries(YouBotDriver soem )
 
 
 #install binary and lib
 install(TARGETS YouBotDriver
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 #copy header files
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include
 )
 
 #copy config files
 install(DIRECTORY config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-
+ament_target_dependencies(YouBotDriver 
+      rclcpp 
+      )
 
 #INSTALL(TARGETS YouBotDriver YouBotDriverShared RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
@@ -126,3 +132,4 @@ install(DIRECTORY config
 
 #target_link_libraries(YouBot_test YouBotDriver)
 
+ament_package()

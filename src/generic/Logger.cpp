@@ -118,32 +118,32 @@ namespace youbot {
       filestr << out.str() << std::endl;
       filestr.close();
     }
-#ifdef USE_ROS_LOGGING
-    if (toROS) {
-      switch (level) {
-        case trace:
-          ROS_DEBUG("%s", out.str().c_str());
-          break;
-        case debug:
-          ROS_DEBUG("%s", out.str().c_str());
-          break;
-        case info:
-          ROS_INFO("%s", out.str().c_str());
-          break;
-        case warning:
-          ROS_WARN("%s", out.str().c_str());
-          break;
-        case error:
-          ROS_ERROR("%s", out.str().c_str());
-          break;
-        case fatal:
-          ROS_FATAL("%s", out.str().c_str());
-          break;
-        default:
-          break;
-      }
-    }
-#endif
+// #ifdef USE_ROS_LOGGING
+//     if (toROS) {
+//       switch (level) {
+//         case trace:
+//           RCLCPP_DEBUG("%s", out.str().c_str());
+//           break;
+//         case debug:
+//           ROS_DEBUG("%s", out.str().c_str());
+//           break;
+//         case info:
+//           ROS_INFO("%s", out.str().c_str());
+//           break;
+//         case warning:
+//           ROS_WARN("%s", out.str().c_str());
+//           break;
+//         case error:
+//           ROS_ERROR("%s", out.str().c_str());
+//           break;
+//         case fatal:
+//           ROS_FATAL("%s", out.str().c_str());
+//           break;
+//         default:
+//           break;
+//       }
+//     }
+// #endif
   }
 
 } // namespace youbot
