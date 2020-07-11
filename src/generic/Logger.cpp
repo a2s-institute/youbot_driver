@@ -57,6 +57,9 @@ namespace youbot {
   bool Logger::toFile = false;
   bool Logger::toROS = false;
   severity_level Logger::logginLevel = info;
+#ifdef USE_ROS_LOGGING
+  rclcpp::Logger Logger::ros_logger = rclcpp::get_logger("youbot_driver");
+#endif
 
   Logger::Logger(const std::string &funcName, const int &lineNo, const std::string &fileName, severity_level level) {
 #ifndef USE_ROS_LOGGING
@@ -122,22 +125,22 @@ namespace youbot {
     if (toROS) {
       switch (level) {
         case trace:
-          ROS_DEBUG("%s", out.str().c_str());
+          RCLCPP_DEBUG(ros_logger, "%s", out.str().c_str());
           break;
         case debug:
-          ROS_DEBUG("%s", out.str().c_str());
+          RCLCPP_DEBUG(ros_logger, "%s", out.str().c_str());
           break;
         case info:
-          ROS_INFO("%s", out.str().c_str());
+          RCLCPP_INFO(ros_logger, "%s", out.str().c_str());
           break;
         case warning:
-          ROS_WARN("%s", out.str().c_str());
+          RCLCPP_WARN(ros_logger, "%s", out.str().c_str());
           break;
         case error:
-          ROS_ERROR("%s", out.str().c_str());
+          RCLCPP_ERROR(ros_logger, "%s", out.str().c_str());
           break;
         case fatal:
-          ROS_FATAL("%s", out.str().c_str());
+          RCLCPP_FATAL(ros_logger, "%s", out.str().c_str());
           break;
         default:
           break;

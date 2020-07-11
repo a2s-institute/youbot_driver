@@ -1,3 +1,5 @@
+**Note: This package compiles, but has not been tested with foxy-devel yet.**
+
 youBot API
 ------------
 
@@ -26,18 +28,16 @@ These libraries are required by the youBot API:
 * [Boost C++ Libraries](http://www.boost.org)
 
 
-### Installation with rosmake:
-Install a minimal installation of ROS. (see ros.org)
+### Installation with colcon:
+Install a minimal installation of ROS 2.
 
 Clone the youBot API sources:
     
     git clone git://github.com/youbot/youbot_driver.git
 
-Add the repository folder to the ROS_PACKAGE_PATH environment variable.
-
 Compile the youbot driver by typing:
 
-    rosmake youbot_driver --rosdep-install
+    colcon build --packages-select youbot_driver
 
 
 ### Manual installation:

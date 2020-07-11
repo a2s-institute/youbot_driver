@@ -1,8 +1,14 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(youbot_driver)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rosconsole)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread date_time filesystem system regex)
+
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -32,21 +38,12 @@ else()
 	)
 endif()
 
-## Note exported include dirs for install in cmake/config.cmake
-catkin_package(
-	INCLUDE_DIRS ${INCLUDE_DIRS}
-	LIBRARIES YouBotDriver soem rt
-	CATKIN_DEPENDS roscpp rosconsole
-	DEPENDS Boost
-	CFG_EXTRAS config.cmake
-)
 
+## Note exported include dirs for install in cmake/config.cmake
 include_directories(
 	${INCLUDE_DIRS}
-	${catkin_INCLUDE_DIRS}
 )
 
-add_definitions(-DUSE_ROS_LOGGING)
 
 ########### CppUnit and tests ###########
 find_package(CppUnit)
@@ -96,24 +93,32 @@ set(YOUBOT_DRIVER_SRC
 )
 
 add_library(YouBotDriver ${YOUBOT_DRIVER_SRC})
-target_link_libraries(YouBotDriver soem ${catkin_LIBRARIES})
+ament_target_dependencies(YouBotDriver
+    rclcpp
+)
+target_link_libraries(YouBotDriver
+    soem
+)
+target_compile_definitions(YouBotDriver PRIVATE
+    -DUSE_ROS_LOGGING
+)
 
 
 #install binary and lib
 install(TARGETS YouBotDriver
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 #copy header files
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
 )
 
 #copy config files
 install(DIRECTORY config
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
 )
 
 
@@ -125,4 +130,19 @@ install(DIRECTORY config
 #)
 
 #target_link_libraries(YouBot_test YouBotDriver)
+
+ament_export_dependencies(
+    rclcpp
+    Boost
+)
+ament_export_include_directories(${INCLUDE_DIRS})
+ament_export_libraries(
+  YouBotDriver
+  soem
+  rt
+)
+
+ament_package(
+    CONFIG_EXTRAS cmake/config.cmake
+)
 
