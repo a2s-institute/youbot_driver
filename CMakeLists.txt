@@ -95,6 +95,7 @@ set(YOUBOT_DRIVER_SRC
 add_library(YouBotDriver ${YOUBOT_DRIVER_SRC})
 ament_target_dependencies(YouBotDriver
     rclcpp
+    Boost
 )
 target_link_libraries(YouBotDriver
     soem
