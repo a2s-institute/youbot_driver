@@ -12,9 +12,12 @@ add_executable(base_arm_gripper_test
   YouBotGripperTest.cpp
 )
 
-target_link_libraries(base_arm_gripper_test YouBotDriver cppunit)
+add_executable(arm_torque_test YouBotArmTorqueTest.cpp)
 
-install(TARGETS base_arm_gripper_test
+target_link_libraries(base_arm_gripper_test YouBotDriver cppunit)
+target_link_libraries(arm_torque_test YouBotDriver cppunit)
+
+install(TARGETS base_arm_gripper_test arm_torque_test
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
